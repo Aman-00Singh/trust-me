@@ -1,21 +1,23 @@
 import express from "express";
 import cors from "cors";
-const bodyParser = require("body-parser");
-require("dotenv").config();
+import dotenv from "dotenv";
+import connectDB from "./config/connectDB.js";
 
+dotenv.config();
+connectDB();
+
+const PORT = process.env.PORT || 8000;
 const app = express();
 
-// Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Routes
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
-// Start the server
-const PORT = process.env.PORT || 5000;
+// Server Port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
