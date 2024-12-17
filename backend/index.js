@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/connectDB.js";
+import mainRouter from "./routers/mainRouter.js";
 
 dotenv.config();
 connectDB();
@@ -13,8 +14,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
+app.use("/api", mainRouter);
+
+app.post("api/signup", (req, res) => {
+  const { websiteUrl, companyName, email, password } = req.body;
 });
 
 // Server Port
