@@ -70,7 +70,7 @@ export const loginCntroller = async (req, res) => {
     const accessToken = generateAccessToken(existingCompany._id);
     const refreshToken = generateRefreshToken(existingCompany._id);
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("jwt", refreshToken, {
       httpOnly: true,
       secure: true,
     });
@@ -84,7 +84,7 @@ export const loginCntroller = async (req, res) => {
 
 export const logoutController = async (req, res) => {
   try {
-    await res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+    await res.clearCookie("jwt", { httpOnly: true, secure: true });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     return res
@@ -93,6 +93,30 @@ export const logoutController = async (req, res) => {
   }
 };
 
+export const refreshAccessToken = async (req, res) => {
+  console.log("refreshAccessToken called");
+  const cookies = req.cookies;
+  console.log(cookies);
+  if (!cookies.jwt) {
+    return res.status(401).json({ message: "No refresh token found" });
+  }
+
+  const refreshToken = cookies.jwt;
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const data = {
+      _id: decoded._id,
+    };
+    console.log(data);
+    const accessToken = generateAccessToken(data);
+    return res.status(201).json({ accessToken });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ message: "Invalid refresh token" });
+  }
+};
 //generate access token
 function generateAccessToken(existingCompanyId) {
   try {
