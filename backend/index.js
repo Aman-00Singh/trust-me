@@ -18,10 +18,6 @@ app.use(cookieParser());
 // Routes
 app.use("/api", mainRouter);
 
-app.post("api/signup", (req, res) => {
-  const { websiteUrl, companyName, email, password } = req.body;
-});
-
 // Server Port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
